@@ -11,8 +11,7 @@ Particle::Particle()
 
 Particle::Particle(int w, int h)
     : pos(w,h),
-      vx(0),
-      vy(0),
+      vel(0,0),
       density(0)
 {
 }

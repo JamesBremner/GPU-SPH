@@ -27,8 +27,7 @@ OBJ_test = \
 OBJ_noGL = \
 	$(ODIR)/noGLmain.o  \
 	$(ODIR)/Particle.o  \
-		$(ODIR)/display.o  \
-		$(ODIR)/cGUI.o  \
+	$(ODIR)/cGUI.o  \
 
 
 

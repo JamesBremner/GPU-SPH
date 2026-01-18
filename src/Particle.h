@@ -7,7 +7,7 @@
 struct Particle
 {
     cxy pos;
-    float vx = 0.0f, vy = 0.0f;
+    cxy vel;
     float density;
 
     Particle();
