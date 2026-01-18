@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "cxy.h"
 #include "Particle.h"
 
 Particle::Particle()
@@ -9,8 +10,7 @@ Particle::Particle()
 }
 
 Particle::Particle(int w, int h)
-    : px(w),
-      py(h),
+    : pos(w,h),
       vx(0),
       vy(0),
       density(0)
@@ -38,8 +38,8 @@ Particle::generate(
 std::string Particle::text() const
 {
     std::string ret;
-    ret = std::to_string(px) +
-          ", " + std::to_string(py) +
+    ret = std::to_string(pos.x) +
+          ", " + std::to_string(pos.y) +
           " ";
     return ret;
 }
@@ -50,8 +50,8 @@ void Particle::test()
     float xtotal = 0;
     for (auto &p : vParticles)
     {
-        std::cout << p.text();
-        xtotal += p.px;
+        //std::cout << p.text();
+        xtotal += p.pos.x;
     }
     std::cout << "\n";
 

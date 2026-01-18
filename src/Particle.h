@@ -1,6 +1,12 @@
+#pragma once
+#include <iostream>
+#include <vector>
+#include "cxy.h"
+
+
 struct Particle
 {
-    float px, py;
+    cxy pos;
     float vx = 0.0f, vy = 0.0f;
     float density;
 
@@ -18,3 +24,5 @@ struct Particle
 
     void test();
 };
+
+

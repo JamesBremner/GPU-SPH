@@ -2,10 +2,9 @@
 VPATH = ./src 
 
 	# compiler include search paths
-# INCS = -I./include \
-# 	-I../windex/include \
-# 	-I../raven-set \
-# 	-I../boost/boost1_78 
+INCS =  \
+	-I../windex/include \
+
 
 LIBS = \
 	-lgdiplus -lgdi32 -lcomdlg32 -lstdc++fs -lComctl32 \
@@ -25,6 +24,14 @@ OBJ_test = \
 	$(ODIR)/Particle.o  \
 
 
+OBJ_noGL = \
+	$(ODIR)/noGLmain.o  \
+	$(ODIR)/Particle.o  \
+		$(ODIR)/display.o  \
+		$(ODIR)/cGUI.o  \
+
+
+
 ### COMPILE
 
 $(ODIR)/%.o: %.cpp  
@@ -34,6 +41,11 @@ $(ODIR)/%.o: %.cpp
 test: $(OBJ_test)
 	g++ $(OPT) \
 	-o bin/test.exe $^  \
+	$(static_link_flags) $(LIBS)
+
+noGL: $(OBJ_noGL)
+	g++ $(OPT) \
+	-o bin/noGL.exe $^  \
 	$(static_link_flags) $(LIBS)
 
 .PHONY: clean
