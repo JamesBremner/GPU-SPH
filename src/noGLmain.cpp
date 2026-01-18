@@ -30,7 +30,7 @@ const float size = 20;
 const float rest_density = 8.0f;
 const float gas_constant = 200.0f;
 const float damping = 0.6f;
-const float force = 9.81f;       // the gravitational constant. see https://github.com/JimaBob/GPU-SPH/issues/5
+const float force = 9.81f; // the gravitational constant. see https://github.com/JimaBob/GPU-SPH/issues/5
 
 float poly6(float r, float C, float hh)
 {
@@ -63,37 +63,41 @@ float viscosity_laplacian(float r, float visc_const)
 }
 
 /// @brief Impose speed limit
-/// @param[in/out] vel 
+/// @param[in/out] vel
 ///
 /// Why is there s speed limit ( less than c )?
 
-void speedLimit( cxy& vel ) {
+void speedLimit(cxy &vel)
+{
 
     // avoid extracting square root unless sepeed limit exceeded
     const float maxSpeedSquared = 40000;
-    float ss = vel.x *vel.x + vel.y * vel.y;
-    if( ss <= maxSpeedSquared )
+    float ss = vel.x * vel.x + vel.y * vel.y;
+    if (ss <= maxSpeedSquared)
         return;
 
     // reduce speed
     vel *= 200 / sqrt(ss);
-
 }
 
-void NewtonLaw2( 
-    Particle& p,
-    const cxy& force,
-    float mass  )
-    {
-        p.vel = force;
-        p.vel *= 1.0f / mass;
-    }
+void NewtonLaw2(
+    Particle &p,
+    const cxy &force,
+    float mass)
+{
+    p.vel = force;
+    p.vel *= 1.0f / mass;
+}
 
-int cSPHsim::simStep()
+cSPHsim::cSPHsim()
 {
     // Particles Setup
     particles = Particle::generate(
         num_particles, width, height);
+}
+
+int cSPHsim::simStep()
+{
 
     // loop over the particles
     for (int id = 0; id < num_particles; id++)
@@ -154,14 +158,14 @@ int cSPHsim::simStep()
         // see https://github.com/JimaBob/GPU-SPH/issues/6 )
         float massOfParticle = particles[id].density + force / mass;
 
-        NewtonLaw2( particles[id], f, massOfParticle );
+        NewtonLaw2(particles[id], f, massOfParticle);
 
         // impose speed limit
-        speedLimit( particles[id].vel );
+        speedLimit(particles[id].vel);
 
         // Move and process boundaries
 
-        cxy v( particles[id].vel);
+        cxy v(particles[id].vel);
         v *= timeStep;
         particles[id].pos += v;
     }

@@ -7,6 +7,7 @@ namespace wex {
 class cSPHsim
 {
     public:
+    cSPHsim();
     int simStep();
     void draw( wex::shapes& S );
 

@@ -13,12 +13,20 @@ cGUI::cGUI()
     eventHandlers();
     menus();
 
+    myUpdateTimer = new wex::timer(fm, 20);
+
     fm.show();
     fm.run();
 }
 
 void cGUI::eventHandlers()
 {
+    fm.events().timer(
+        [this](int id) {
+            theSim.simStep();
+            fm.update();
+        });
+
     fm.events().draw(
         [&](PAINTSTRUCT &ps)
         {
@@ -51,7 +59,7 @@ void cGUI::menus()
             std::ifstream t(fn);
             std::stringstream buffer;
             buffer << t.rdbuf();
-            //mySolver.input(buffer.str());
+            // mySolver.input(buffer.str());
             fm.update();
         });
 
@@ -64,12 +72,12 @@ void cGUI::menus()
             if (fn.empty())
                 return;
             std::ofstream of(fn);
-            if( !of.is_open() )
+            if (!of.is_open())
             {
-                wex::msgbox("Cannot open "+fn);
+                wex::msgbox("Cannot open " + fn);
                 return;
             }
-           // mySolver.save( of );
+            // mySolver.save( of );
         });
     mb.append("File", *myFileMenu);
 
@@ -78,15 +86,16 @@ void cGUI::menus()
         "Specifications",
         [&](const std::string &title)
         {
-          //  mySolver.editSpecs(fm);
+            //  mySolver.editSpecs(fm);
             fm.update();
         });
     mb.append("Edit", *myEditMenu);
 }
 
-void cSPHsim::draw(  wex::shapes& S )
+void cSPHsim::draw(wex::shapes &S)
 {
-    for( auto& p : particles ) {
-        S.rectangle({(int)p.pos.x-1,(int)p.pos.y-1,3,3} );
+    for (auto &p : particles)
+    {
+        S.rectangle({(int)p.pos.x - 1, (int)p.pos.y - 1, 3, 3});
     }
 }

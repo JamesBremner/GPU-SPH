@@ -11,17 +11,17 @@
 class cGUI
 {
 public:
-
     cGUI();
 
 private:
     wex::gui &fm;
     wex::menu *myFileMenu;
     wex::menu *myEditMenu;
+    wex::timer *myUpdateTimer;
 
     cSPHsim theSim;
 
     void menus();
     void eventHandlers();
-    void draw( wex::shapes& S );
+    void draw(wex::shapes &S);
 };
