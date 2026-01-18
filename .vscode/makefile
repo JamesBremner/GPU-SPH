@@ -26,6 +26,7 @@ OBJ_test = \
 
 OBJ_noGL = \
 	$(ODIR)/noGLmain.o  \
+	$(ODIR)/cSPHsim.o  \
 	$(ODIR)/Particle.o  \
 	$(ODIR)/cGUI.o  \
 
