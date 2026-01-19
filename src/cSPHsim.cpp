@@ -82,8 +82,9 @@ void cSPHsim::NewtonLaw2(
     const cxy &force,
     float mass)
 {
-    p.vel = force;
-    p.vel *= 1.0f / mass;
+    cxy deltaVelocity( force );
+    deltaVelocity *= 1.0f / mass;
+    p.vel += deltaVelocity;
 }
 
 cSPHsim::cSPHsim()
