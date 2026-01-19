@@ -36,4 +36,22 @@ private:
         float mass);
 
     void handle_boundaries(int id);
+
+    /// @brief calculate particle seperation distance
+    /// @param[out] relevant true if particles close enough together to be influential ( i.e < smoothing radius )
+    /// @param[out] vector vector between particles
+    /// @param[out] separation distance between particles
+    /// @param[in] pos1 location first particle
+    /// @param[in] pos2 location second particle
+    ///
+    /// This avoid the square root extraction if particles are far apart
+    /// but in general it is an expensive operation
+    /// so do not make redundant calls to this.
+
+    void particleSeparation(
+        bool &relevant,
+        cxy &vector,
+        float &separation,
+        const cxy &pos1,
+        const cxy &pos2);
 };
