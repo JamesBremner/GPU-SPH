@@ -18,7 +18,8 @@ struct Particle
     std::vector<Particle>
     generate(
         int count,
-        int w, int h);
+        int w, int h,
+    const cxy& offset);
 
     std::string text() const;
 

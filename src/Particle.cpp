@@ -18,7 +18,8 @@ Particle::Particle(int w, int h)
 std::vector<Particle>
 Particle::generate(
     int count,
-    int width, int height)
+    int width, int height,
+    const cxy& offset)
 {
     std::vector<Particle> ret;
 
@@ -28,8 +29,8 @@ Particle::generate(
 
     for (int k = 0; k < count; k++)
         ret.emplace_back(
-            rand() % width,
-            rand() % height);
+            rand() % width + offset.x,
+            rand() % height + offset.y);
 
     return ret;
 }
@@ -45,7 +46,7 @@ std::string Particle::text() const
 
 void Particle::test()
 {
-    auto vParticles = generate(100, 600, 600);
+    auto vParticles = generate(100, 600, 600, cxy(0,0));
     float xtotal = 0;
     for (auto &p : vParticles)
     {

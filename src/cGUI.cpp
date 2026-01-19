@@ -13,7 +13,7 @@ cGUI::cGUI()
     eventHandlers();
     menus();
 
-    myUpdateTimer = new wex::timer(fm, 20);
+    myUpdateTimer = new wex::timer(fm, 100);
 
     fm.show();
     fm.run();
@@ -22,8 +22,11 @@ cGUI::cGUI()
 void cGUI::eventHandlers()
 {
     fm.events().timer(
-        [this](int id) {
-            theSim.simStep();
+        [this](int id)
+        {
+            for (int k = 0; k < 5; k++)
+                theSim.simStep();
+
             fm.update();
         });
 

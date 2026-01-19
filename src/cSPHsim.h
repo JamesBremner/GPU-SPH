@@ -34,4 +34,6 @@ private:
         Particle &p,
         const cxy &force,
         float mass);
+
+    void handle_boundaries(int id);
 };

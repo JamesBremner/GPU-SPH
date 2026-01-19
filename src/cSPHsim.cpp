@@ -91,7 +91,34 @@ cSPHsim::cSPHsim()
 {
     // Particles Setup
     particles = Particle::generate(
-        num_particles, width, height);
+        num_particles, width/4, height/4,
+        cxy(width/4, height/4));
+}
+
+void cSPHsim::handle_boundaries(int id) {
+    const float boundary_damping = 0.8;
+    const int particle_size = 0;        // see https://github.com/JimaBob/GPU-SPH/issues/5#issuecomment-3765761865
+    
+    // Left boundary
+    if (particles[id].pos.x - particle_size < 0.0) {
+        particles[id].pos.x = particle_size;
+        particles[id].vel.x = abs(particles[id].vel.x) * boundary_damping;
+    }
+    // Right boundary
+    if (particles[id].pos.x + particle_size > width) {
+        particles[id].pos.x = width - particle_size;
+        particles[id].vel.x = -abs(particles[id].vel.x) * boundary_damping;
+    }
+    // Bottom boundary
+    if (particles[id].pos.y - particle_size < 0.0) {
+        particles[id].pos.y = particle_size;
+        particles[id].vel.y = abs(particles[id].vel.y) * boundary_damping;
+    }
+    // Top boundary
+    if (particles[id].pos.y + particle_size > height) {
+        particles[id].pos.y = height - particle_size;
+        particles[id].vel.y = -abs(particles[id].vel.y) * boundary_damping;
+    }
 }
 
 int cSPHsim::simStep()
@@ -166,6 +193,8 @@ int cSPHsim::simStep()
         cxy v(particles[id].vel);
         v *= timeStep;
         particles[id].pos += v;
+
+        handle_boundaries(id);
     }
 
     return 0;
