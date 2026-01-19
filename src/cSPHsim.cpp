@@ -200,3 +200,28 @@ int cSPHsim::simStep()
     return 0;
 }
 
+bool cSPHsim::unitTests()
+{
+    cxy pos1(1, 2);
+    cxy pos2(4, 6);
+
+    bool relevant;
+    float seperation;
+    cxy vector;
+    particleSeparation(
+        relevant, vector, seperation,
+        pos1, pos2);
+    if (!relevant)
+        return false;
+    if (seperation != 5)
+        return false;
+
+    pos2 = cxy(301, 402);
+    particleSeparation(
+        relevant, vector, seperation,
+        pos1, pos2);
+    if (relevant)
+        return false;
+
+    return true;
+}
