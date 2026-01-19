@@ -38,9 +38,8 @@ private:
     void handle_boundaries(int id);
 
     /// @brief calculate particle seperation distance
-    /// @param[out] relevant true if particles close enough together to be influential ( i.e < smoothing radius )
     /// @param[out] vector vector between particles
-    /// @param[out] separation distance between particles
+    /// @param[out] separation distance between particles ( -1 if irrelevant, i.e > smoothing radius )
     /// @param[in] pos1 location first particle
     /// @param[in] pos2 location second particle
     ///
@@ -49,9 +48,10 @@ private:
     /// so do not make redundant calls to this.
 
     void particleSeparation(
-        bool &relevant,
         cxy &vector,
         float &separation,
         const cxy &pos1,
         const cxy &pos2);
+
+    bool unitTests();
 };

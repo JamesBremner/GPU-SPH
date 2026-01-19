@@ -21,6 +21,7 @@ const unsigned int WORKGROUP_SIZE = 256;
 float viscocity = 10.0f;
 const float mass = 1.0f;
 const float smoothing_radius = 16.f;
+const float smoothing_radius_squared = smoothing_radius * smoothing_radius;
 const float gravity = 200.0f;
 const float timeStep = 0.005f;
 const int stepsPerRender = 1;
@@ -31,6 +32,22 @@ const float rest_density = 8.0f;
 const float gas_constant = 200.0f;
 const float damping = 0.6f;
 const float force = 9.81f; // the gravitational constant. see https://github.com/JimaBob/GPU-SPH/issues/5
+
+void cSPHsim::particleSeparation(
+    cxy &vector,
+    float &separation,
+    const cxy &pos1,
+    const cxy &pos2)
+{
+    float d2 = pos1.dist2(pos2);
+    if (d2 > smoothing_radius_squared)
+    {
+        separation = -1;
+        return;
+    }
+    separation = sqrt(d2);
+    vector = pos1.vect(pos2);
+}
 
 float cSPHsim::poly6(float r, float C, float hh)
 {
@@ -205,22 +222,19 @@ bool cSPHsim::unitTests()
     cxy pos1(1, 2);
     cxy pos2(4, 6);
 
-    bool relevant;
     float seperation;
     cxy vector;
     particleSeparation(
-        relevant, vector, seperation,
+        vector, seperation,
         pos1, pos2);
-    if (!relevant)
-        return false;
     if (seperation != 5)
         return false;
 
     pos2 = cxy(301, 402);
     particleSeparation(
-        relevant, vector, seperation,
+        vector, seperation,
         pos1, pos2);
-    if (relevant)
+    if (seperation > 0)
         return false;
 
     return true;
