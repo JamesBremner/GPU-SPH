@@ -17,11 +17,12 @@ private:
     wex::gui &fm;
     wex::menu *myFileMenu;
     wex::menu *myEditMenu;
+    wex::menu *myRunMenu;
     wex::timer *myUpdateTimer;
 
     cSPHsim theSim;
 
     void menus();
     void eventHandlers();
-    void draw(wex::shapes &S);
+
 };

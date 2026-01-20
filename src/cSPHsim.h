@@ -38,7 +38,6 @@ private:
     void handle_boundaries(int id);
 
     /// @brief calculate particle seperation distance
-    /// @param[out] vector vector between particles
     /// @param[out] separation distance between particles ( -1 if irrelevant, i.e > smoothing radius )
     /// @param[in] pos1 location first particle
     /// @param[in] pos2 location second particle
@@ -47,11 +46,7 @@ private:
     /// but in general it is an expensive operation
     /// so do not make redundant calls to this.
 
-    void particleSeparation(
-        cxy &vector,
-        float &separation,
-        const cxy &pos1,
-        const cxy &pos2);
+    std::vector<float> particleSeparation( int focusIndex );
 
     bool unitTests();
 };
