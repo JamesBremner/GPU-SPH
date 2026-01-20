@@ -33,6 +33,17 @@ const float gas_constant = 200.0f;
 const float damping = 0.6f;
 const float force = 9.81f; // the gravitational constant. see https://github.com/JimaBob/GPU-SPH/issues/5
 
+void cSPHsim::init()
+{
+    calcViscConst();
+}
+void cSPHsim::calcViscConst()
+{
+    C = 4.0 / (PI * pow(smoothing_radius, 8));
+    C6 = -6 * C;
+    visc_const = (45.0f / (PI * pow(smoothing_radius, 6)));
+}
+
 std::vector<float> cSPHsim::particleSeparation(int focusIndex)
 {
     std::vector<float> ret;
@@ -51,11 +62,11 @@ std::vector<float> cSPHsim::particleSeparation(int focusIndex)
     return ret;
 }
 
-float cSPHsim::poly6(float r, float C, float hh)
+float cSPHsim::poly6(float r)
 {
-    if (r<0)
+    if (r < 0)
         return 0.0;
-    float val = hh - r * r;
+    float val = smoothing_radius_squared - r * r;
     return C * val * val * val;
 }
 
@@ -64,11 +75,11 @@ float cSPHsim::density_to_pressure(float density)
     return gas_constant * (density - rest_density);
 }
 
-cxy cSPHsim::poly6_grad(cxy dp, float r, float C6, float hh)
+cxy cSPHsim::poly6_grad(cxy dp, float r)
 {
-    if (r<0)
+    if (r < 0)
         return cxy(0, 0);
-    float val = hh - r * r;
+    float val = smoothing_radius_squared - r * r;
     float scale = C6 * val * val;
     dp *= scale;
     return dp;
@@ -76,7 +87,7 @@ cxy cSPHsim::poly6_grad(cxy dp, float r, float C6, float hh)
 
 float cSPHsim::viscosity_laplacian(float r, float visc_const)
 {
-    if (r<0)
+    if (r < 0)
         return 0.f;
     return visc_const * (smoothing_radius - r);
 }
@@ -84,7 +95,7 @@ float cSPHsim::viscosity_laplacian(float r, float visc_const)
 void cSPHsim::speedLimit(cxy &vel)
 {
 
-    // avoid extracting square root unless sepeed limit exceeded
+    // avoid extracting square root unless speed limit exceeded
     const float maxSpeedSquared = 40000;
     float ss = vel.x * vel.x + vel.y * vel.y;
     if (ss <= maxSpeedSquared)
@@ -152,18 +163,12 @@ int cSPHsim::simStep()
 
         std::vector<float> vParticleSeparations = particleSeparation(id);
 
-        const float C = 4.0 / (PI * pow(smoothing_radius, 8));
-        const float C6 = -6 * C;
-        const float visc_const = (45.0f / (PI * pow(smoothing_radius, 6)));
-
         // Compute density
         float rho = 0.0;
         for (int i = 0; i < num_particles; i++)
         {
-            rho += mass * poly6(
-                              vParticleSeparations[i],
-                              C,
-                              smoothing_radius_squared);
+            rho += mass * poly6( vParticleSeparations[i] );
+
         }
         particles[id].density = std::max(rho, 0.000001f);
         float P = density_to_pressure(particles[id].density);
@@ -181,14 +186,14 @@ int cSPHsim::simStep()
             cxy dp = particles[i].pos - particles[id].pos;
             float r = vParticleSeparations[i];
 
-            if( r<0)
-            continue;
+            if (r < 0)
+                continue;
             if (r < 0.0001)
                 r = 0.0001;
 
             float rhoi = std::max(particles[i].density, 0.000001f);
             float Pi = density_to_pressure(rhoi);
-            cxy grad = poly6_grad(dp, r, C6, smoothing_radius_squared);
+            cxy grad = poly6_grad(dp, r);
 
             float coeff = -mass * (P + Pi) / (2.0 * rhoi);
             grad *= coeff;

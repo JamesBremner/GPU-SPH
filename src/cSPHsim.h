@@ -8,18 +8,33 @@ namespace wex
 class cSPHsim
 {
 public:
+    // CTOR
     cSPHsim();
+
+    // initialize run
+    void init();
+
+    // move particles one step
     int simStep();
+
+    // dislay particle positions
     void draw(wex::shapes &S);
 
     std::vector<Particle> particles;
 
 private:
-    float poly6(float r, float C, float hh);
+
+    float C;
+    float C6;
+    float visc_const;
+
+    void calcViscConst();
+
+    float poly6(float r);
 
     float density_to_pressure(float density);
 
-    cxy poly6_grad(cxy dp, float r, float C6, float hh);
+    cxy poly6_grad(cxy dp, float r);
 
     float viscosity_laplacian(float r, float visc_const);
 
@@ -46,7 +61,7 @@ private:
     /// but in general it is an expensive operation
     /// so do not make redundant calls to this.
 
-    std::vector<float> particleSeparation( int focusIndex );
+    std::vector<float> particleSeparation(int focusIndex);
 
     bool unitTests();
 };

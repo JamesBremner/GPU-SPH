@@ -79,6 +79,7 @@ void cGUI::menus()
         "Simulation",
         [&](const std::string &title)
         {
+            theSim.init();
             myUpdateTimer = new wex::timer(fm, 100);
 
         });
